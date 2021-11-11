@@ -10,7 +10,10 @@ exports.createSauce = (req, res, next) => {
       ...sauceObject,
 //Pour générer l'URL de l'image, le protocole, le nom d'hote, /image et / nome du fichier      
       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
-      //like / dislike/ userlike/userdislike
+      likes: 0,
+      dislikes: 0,
+      usersLiked: [" "],
+      usersDisliked: [" "],
     });
     sauce.save()
       .then(() => res.status(201).json({ message: 'Objet enregistré !'}))
@@ -38,7 +41,7 @@ exports.createSauce = (req, res, next) => {
         const filename = sauce.imageUrl.split('/images/')[1];
 //On utilise unlink pour suprimer un fichier        
         fs.unlink(`images/${filename}`, () => {
-//Une fois le fichier suprimer on suprime le thing de la base de donée
+//Une fois le fichier suprimer on suprime la sauce de la base de donée
           Sauce.deleteOne({ _id: req.params.id })
             .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
             .catch(error => res.status(400).json({ error }));
@@ -59,3 +62,67 @@ exports.getAllSauce = (req, res, next) => {
       .catch(error => res.status(400).json({ error }));
   };
 
+exports.likeOrDislikeSauces = (req, res, next) => {
+//Switch évalue une expression, selon le résultat éxécute l'instruction, l'expression est comparé avec chaque case
+  switch(like){
+//Si l'utilisateur like la sauce    
+    case 1:
+//updateOne pour mettre a jour un seul document      
+      Sauce.updateOne(
+        {_id: req.params.id},
+//$push pour ajouter une valeur spécifiée a un tableau
+//$inc pour incrémenter un champ d'une valeur spécifiée, nous pouvons diminuer ou augmenter cette valeur
+        { $push: {usersLiked: req.body.userId}, 
+          $inc: {likes: +1} }
+        )
+          .then(() => res.status(200).json({message: "J'aime cette sauce"}))
+          .catch((error) => res.status(400).json({ error }))
+
+      break;
+    
+//Si l'utilisateur enleve un like ou un dislike
+    case 0 :      
+      Sauce.findOne({_id: req.params.id})
+        .then((sauce) => {
+//Includes détermine si un le tableau contient une valeur  
+          if (sauce.userLiked.includes(req.body.userId)) {
+            Sauce.updateOne(
+              {_id: req.params.id},
+//$Pull supprime du tableau les instances d'une valeur             
+              { $pull: {usersLiked: req.body.userId},
+                $inc: {likes: -1} }
+            )
+            .then(() => res.status(200).json({ message: "Pas d'avis" }))
+            .catch((error) => res.status(400).json({ error }))
+          }
+          if (sauce.usersDisliked.includes(req.body.userId)) {
+            Sauce.updateOne(
+              {_id: req.params.id},
+              { $pull: {usersDisliked: req.body.userId},
+                $inc: {dislikes: -1}}
+            )
+            .then(() => res.status(200).json({ message: "Pas d'avis" }))
+            .catch((error) => res.status(400).json({ error }))
+          }
+        })
+        .catch((error) => res.status(404).json({ error }))
+      
+      break;
+      
+//Si l'utilisateur dislike la sauce
+    case -1 :
+      Sauce.updateOne(
+        {_id: req.params.id},
+        { $push: {usersDisliked: req.body.userId},
+          $inc: {dislikes: +1}}
+      )
+      .then(() => res.status(200).json({ message: "Je n'aime pas cette sauce" }))
+      .catch((error) => res.status(400).json({ error }))
+
+      break;
+//Si il n'y a aucune correspondance avec les cases    
+    default:
+      console.log(error);
+    
+  }
+} 

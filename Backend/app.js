@@ -29,5 +29,5 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/api/sauces', saucesRoutes);
 app.use('/api/auth', userRoutes);
 
-
+//Pour importer mon app dans mon server
 module.exports = app;

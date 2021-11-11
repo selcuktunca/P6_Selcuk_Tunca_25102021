@@ -21,6 +21,7 @@ exports.signup = (req, res, next) => {
       .catch(error => res.status(500).json({ error }));//Si erreur
   };
 
+  
 //Pour connecter des utilisateurs existant
 exports.login = (req, res, next) => {
 //Touver un seul utilisateur de la base de donnée, avec l'objet filtre (email)   

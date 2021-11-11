@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const uniqueValidator = require('mongoose-unique-validator');
+const uniqueValidator = require('mongoose-unique-validator');// utilisation du validateur unique
 
 //Schema creation compte client avec adresse unique
 const userSchema = mongoose.Schema({

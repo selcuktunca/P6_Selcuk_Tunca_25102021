@@ -22,5 +22,6 @@ const storage = multer.diskStorage({
     callback(null, name + Date.now() + '.' + extension);
   }
 });
-
+//On exporte multer en lui passant le const storage
+//La fonction single indique que l'on va gérer le téléchargement d'image uniquement
 module.exports = multer({storage: storage}).single('image');
