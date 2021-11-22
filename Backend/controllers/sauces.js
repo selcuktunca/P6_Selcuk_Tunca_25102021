@@ -82,8 +82,7 @@ exports.likeOrDislikeSauces = (req, res, next) => {
       break;
     
 //Si l'utilisateur enleve un like ou un dislike
-    case 0 :      
-   console.log("le param id " + req.params.id);  
+    case 0 :       
     Sauce.findOne({_id: req.params.id})
         .then((sauce) => {
 //Includes détermine si un le tableau contient une valeur  
