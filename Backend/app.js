@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
+const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require("helmet");
 
 const saucesRoutes = require('./routes/sauces');
 const userRoutes = require('./routes/user');
@@ -14,6 +16,8 @@ mongoose.connect('mongodb+srv://Selcuk_tunca_38:Aya&2014@cluster0.47yvx.mongodb.
 
 const app = express();
 
+app.use(helmet());
+
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
@@ -21,7 +25,10 @@ app.use((req, res, next) => {
     next();
   });
 
+
 app.use(express.json());
+
+app.use(mongoSanitize());
 
 //Pour dire a notre appli express de servir le dossier images quand on fera une requete a /images
 app.use('/images', express.static(path.join(__dirname, 'images')));

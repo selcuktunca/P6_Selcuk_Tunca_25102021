@@ -64,6 +64,7 @@ exports.getAllSauce = (req, res, next) => {
 
 exports.likeOrDislikeSauces = (req, res, next) => {
 //Switch évalue une expression, selon le résultat éxécute l'instruction, l'expression est comparé avec chaque case
+  const like = req.body.like;
   switch(like){
 //Si l'utilisateur like la sauce    
     case 1:
@@ -82,10 +83,11 @@ exports.likeOrDislikeSauces = (req, res, next) => {
     
 //Si l'utilisateur enleve un like ou un dislike
     case 0 :      
-      Sauce.findOne({_id: req.params.id})
+   console.log("le param id " + req.params.id);  
+    Sauce.findOne({_id: req.params.id})
         .then((sauce) => {
 //Includes détermine si un le tableau contient une valeur  
-          if (sauce.userLiked.includes(req.body.userId)) {
+          if (sauce.usersLiked.includes(req.body.userId)) {
             Sauce.updateOne(
               {_id: req.params.id},
 //$Pull supprime du tableau les instances d'une valeur             

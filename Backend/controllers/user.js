@@ -1,15 +1,17 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const Buffer = require('buffer/').Buffer;
 
 const User = require('../models/User');
 
 //Pour l'enregistrement de nouveaux utilisateurs
 exports.signup = (req, res, next) => {
 //Fonction pour hashé/crypté un mot de passe, on l'execute 10 fois(tour de l'algorythme)    
+    const mailBuffed = new Buffer.from(req.body.email);
     bcrypt.hash(req.body.password, 10) 
       .then(hash => {
         const user = new User({
-          email: req.body.email,
+          email: mailBuffed.toString('base64'),
 //On enregistre le hash du mot de passe          
           password: hash              
         });
@@ -24,8 +26,9 @@ exports.signup = (req, res, next) => {
   
 //Pour connecter des utilisateurs existant
 exports.login = (req, res, next) => {
+  const mailBuffed = new Buffer.from(req.body.email);
 //Touver un seul utilisateur de la base de donnée, avec l'objet filtre (email)   
-    User.findOne({ email: req.body.email })
+    User.findOne({ email: mailBuffed.toString('base64') })
 //On vérifie si on a recupéré un user ou non      
     .then(user => {
         if (!user) {
