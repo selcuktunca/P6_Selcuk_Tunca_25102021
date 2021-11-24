@@ -1,5 +1,8 @@
+//Permet de hashé le mot de passe
 const bcrypt = require('bcrypt');
+//Permet l'echange secu de jeton, verif de l'integrité et de l'authenticité des données, l’information est échangée sous la forme d’un jeton signé afin de pouvoir en vérifier la légitimité.
 const jwt = require('jsonwebtoken');
+//Premet de crypter l'email dans la BDD
 const Buffer = require('buffer/').Buffer;
 
 const User = require('../models/User');

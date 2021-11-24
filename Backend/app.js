@@ -15,7 +15,7 @@ mongoose.connect('mongodb+srv://Selcuk_tunca_38:Aya&2014@cluster0.47yvx.mongodb.
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 
 const app = express();
-
+//Permet de configurer des en-tetes HTTP
 app.use(helmet());
 
 app.use((req, res, next) => {
@@ -27,7 +27,7 @@ app.use((req, res, next) => {
 
 
 app.use(express.json());
-
+//Filtre toute les requetes
 app.use(mongoSanitize());
 
 //Pour dire a notre appli express de servir le dossier images quand on fera une requete a /images
